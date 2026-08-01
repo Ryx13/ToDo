@@ -39,7 +39,7 @@ Follow these exact commands to start the application from a clean clone:
 
 ```bash
 # 1. Clone the repository and navigate into it
-git clone [https://github.com/Ryx13/ToDo.git](https://github.com/Ryx13/ToDo.git)
+git clone https://github.com/Ryx13/ToDo.git
 cd ToDo
 
 # 2. Install all required dependencies
