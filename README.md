@@ -55,7 +55,9 @@ npm test
 # 5. Start the local development server
 npm run dev
 
+```
+
 ## AI Usage Declaration
 This repository makes use of AI code generation using the following tools: Gemini-Web[Gemini 1.5 Pro].
 This repository does not use AI in-line editing tools.
-This repository makes use of AI code review using the following tools: Gemini-Web[Gemini 1.5 Pro].
+This repository does not use AI code review. (Gemini-Web[Gemini 1.5 Pro] was used for debugging via terminal-output analysis, documented in the AI usage transcript.)
