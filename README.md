@@ -61,3 +61,5 @@ npm run dev
 This repository makes use of AI code generation using the following tools: Gemini-Web[Gemini 1.5 Pro].
 This repository does not use AI in-line editing tools.
 This repository does not use AI code review. (Gemini-Web[Gemini 1.5 Pro] was used for debugging via terminal-output analysis, documented in the AI usage transcript.)
+
+*Note: an earlier exchange in the transcript considered classifying debugging as code review; this was reconsidered and reverted, since the Lab 1 brief and course AI policy treat debugging and code review as distinct categories.*
