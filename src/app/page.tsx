@@ -1,12 +1,29 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import TaskForm from "@/components/TaskForm";
+import TaskList, { Task } from "@/components/TaskList";
 
 export default function Home() {
-  const fetchTasks = () => {
-    // We will implement the fetching and state management in Commit 7
-    console.log("Task created! Fetching updated list...");
+  const [tasks, setTasks] = useState<Task[]>([]);
+
+  // Fetch only active (non-archived) tasks
+  const fetchTasks = async () => {
+    try {
+      const res = await fetch("/api/tasks?archived=false");
+      if (res.ok) {
+        const data = await res.json();
+        setTasks(data);
+      }
+    } catch (error) {
+      console.error("Error fetching tasks", error);
+    }
   };
+
+  // Load tasks on initial mount
+  useEffect(() => {
+    fetchTasks();
+  }, []);
 
   return (
     <main className="min-h-screen bg-gray-50 text-black p-8">
@@ -15,10 +32,7 @@ export default function Home() {
         
         <TaskForm onTaskCreated={fetchTasks} />
         
-        {/* The Task List and sorting controls will go here in the next commit */}
-        <div className="text-center text-gray-500 py-8 border-2 border-dashed rounded-md">
-          Task list will be rendered here.
-        </div>
+        <TaskList tasks={tasks} onTaskUpdate={fetchTasks} />
       </div>
     </main>
   );
