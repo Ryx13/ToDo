@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { isOverdue as checkOverdue } from "@/lib/overdue";
 
 export type Task = {
   id: number;
@@ -96,7 +97,7 @@ export default function TaskList({ tasks, onTaskUpdate, isArchiveView }: TaskLis
           </div>
         ) : (
           sortedTasks.map((task) => {
-            const isOverdue = task.dueDate < todayTimestamp && task.status !== "Complete" && task.isArchived === 0;
+            const isOverdue = checkOverdue(task.dueDate, task.status, task.isArchived, todayTimestamp);
 
             if (editingId === task.id) {
               return (

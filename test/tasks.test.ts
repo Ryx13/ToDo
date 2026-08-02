@@ -3,6 +3,7 @@ import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { tasks } from '../src/db/schema';
 import { eq } from 'drizzle-orm';
+import { isOverdue } from '../src/lib/overdue';
 
 describe('Task Database Behaviors', () => {
   let sqlite: Database.Database;
@@ -33,7 +34,7 @@ describe('Task Database Behaviors', () => {
 
   it('1. should successfully create a task with all mandatory fields', () => {
     const timestamp = new Date('2026-12-01T00:00:00').getTime();
-    
+
     const newTask = db.insert(tasks).values({
       title: 'Complete CPTS Module',
       description: 'Finish the Active Directory enumeration section.',
@@ -66,19 +67,19 @@ describe('Task Database Behaviors', () => {
 
     // Verify the record still exists and the flag is toggled
     const fetchedTasks = db.select().from(tasks).all();
-    
+
     expect(fetchedTasks.length).toBe(1);
     expect(archivedTask.isArchived).toBe(1);
   });
 
-  it('3. should dynamically flag a task as overdue based on date comparison', () => {
+  it('3. should dynamically flag a task as overdue using the real application logic', () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const todayTimestamp = today.getTime();
 
     // Create a task with a due date in the past (1 day ago)
     const pastTimestamp = todayTimestamp - (24 * 60 * 60 * 1000);
-    
+
     const pastTask = db.insert(tasks).values({
       title: 'Overdue Task',
       description: 'This task was due yesterday.',
@@ -86,9 +87,20 @@ describe('Task Database Behaviors', () => {
       topic: 'General',
     }).returning().get();
 
-    // Replicate the frontend/read-time dynamic overdue logic
-    const isOverdue = pastTask.dueDate < todayTimestamp && pastTask.status !== 'Complete';
+    const result = isOverdue(
+      pastTask.dueDate,
+      pastTask.status,
+      pastTask.isArchived,
+      todayTimestamp
+    );
 
-    expect(isOverdue).toBe(true);
+    expect(result).toBe(true);
+    const completedResult = isOverdue(
+      pastTimestamp,
+      'Complete',
+      0,
+      todayTimestamp
+    );
+    expect(completedResult).toBe(false);
   });
 });
